@@ -1,2 +1,2 @@
-# CS-425
+# CS425
 Parallel Computing
