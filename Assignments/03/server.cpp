@@ -1,6 +1,7 @@
 
 #include <iostream>
-
+#include <cstdlib>
+#include <future>
 // These are custom classes that encode the web transactions.  They're
 //   actually quite simple (mostly because we're solving a very limited)
 //   problem.
@@ -21,6 +22,12 @@
 //  (Don't use any of them.  Generally, above 9000 is usually pretty clear)
 //
 const uint16_t DefaultPort = 8140; // Update this variable with your assigned port value
+
+HTTPRequest Arequest(std::string msg) {
+    // Implement Arequest function as needed
+    // For now, returning a default-constructed HTTPRequest
+    return HTTPRequest(msg);
+}
 
 int main(int argc, char* argv[]) {
     uint16_t port = argc > 1 ? std::stol(argv[1]) : DefaultPort;
@@ -61,14 +68,15 @@ int main(int argc, char* argv[]) {
         // If you want to see the raw "protocol", uncomment the
         //   following line:
         //
-        // std::cout << msg;
+        std::cout << msg;
 
         // However, if our msg has requests in it, we send it to a
         //   request parser, HTTPRequest.  The resulting request
         //   contains the type of request, the filename, and other
         //   information.
-        HTTPRequest request(msg);
-
+        auto future = std::async(std::launch::async, Arequest, msg);
+        HTTPRequest request = future.get();
+        
         //  If you want to see the parsed message, just uncomment the
         //    following line:
         //
@@ -90,7 +98,7 @@ int main(int argc, char* argv[]) {
         //   that path here, so we're all looking at the same files.
         const char* root = "/home/faculty/shreiner/public_html/03";
         HTTPResponse response(request, root);
-
+        
         //  Again, if you want to see the contents of the response
         //    (specifically, the header, which is human readable, but
         //    not the returned data), you can just print this to
